@@ -1,16 +1,14 @@
-import { Audio } from 'react-loader-spinner'
-const Loader = () => {
+import {FallingLines} from 'react-loader-spinner'
+const Loader = ({loading}) => {
     return (
         <div>
-            <Audio
-                height="80"
-                width="80"
-                radius="9"
-                color="green"
-                ariaLabel="three-dots-loading"
-                wrapperStyle
-                wrapperClass
+            <FallingLines
+                color="#4fa94d"
+                width="100"
+                visible={loading}
+                ariaLabel="falling-circles-loading"
             />
+
         </div>
     );
 }

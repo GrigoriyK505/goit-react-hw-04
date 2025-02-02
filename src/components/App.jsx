@@ -1,5 +1,6 @@
-import { ErrorMessage } from 'formik';
 import s from './App.module.css'
+import fetchRequest from '../services/api';
+import toast, { Toaster } from 'react-hot-toast';
 import ImageGallery from './ImageGallery/ImageGallery'
 import Loader from './Loader/Loader';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
@@ -19,23 +20,50 @@ function App() {
 
   useEffect(() => {
     if (!query) return;
-    async function fetchArticles() {
+    const getData = async () => {
+      setLoading(true);
+      setError(false);
+     
       try {
-        setError(true);
-        const { results } = await fetchRequest(query, page);
-        setArticles((prev) => [...prev, ...results])
-        setLoading(false);
+        const data = await fetchRequest(query, page);
+        if (data.length === 0) {
+          toast.error("No images founded for this request!", {
+            style: {
+              background: "#b1cc29",
+              color: "#fff",
+              fontWeight: "bold",
+              padding: "12px",
+              borderRadius: "10px",
+            },
+            position: "top-right"
+          });
+        }
+        setArticles((prev) => [...prev, ...data])
+
       } catch (error) {
+        console.error(error);
         setError(true);
+        toast.error("Oops, something went wrong!", {
+          style: {
+            background: "red",
+            color: "#fff",
+            fontWeight: "bold",
+            padding: "12px",
+            borderRadius: "10px",
+          },
+          position: "top-right"
+        });
+
       } finally {
         setLoading(false);
       }
     };
-    fetchArticles();
+    getData();
   }, [query, page]);
   
-  const onSubmit = () => {
+  const handleSetQuery = (newQuery) => {
     setQuery(newQuery);
+    setArticles([]);
     setPage(1);
   };
 
@@ -44,25 +72,36 @@ function App() {
     setModalIsOpen(true);
   };
 
-  const modalIsClose = () => {
+  const closeModal = () => {
     setTargetImage(null);
     setModalIsOpen(false);
+  };
+  const handleClick = () => {
+    setPage((prev) => prev + 1);
   };
 
   return (
     <section>
-      <SearchBar onSubmit={onSubmit} />
-      <ImageGallery openModal={openModal} />
-      {articles.length > 0 && <LoadMoreBtn setPage={setPage} />}
+      <Toaster />
+      <SearchBar handleSetQuery={handleSetQuery} />
+      {!error ? (
+        <ImageGallery openModal={openModal} articles={articles}/>
+      ) : (
+          <ErrorMessage />
+      )}
+
+      <Loader loading={loading} />
+      
+      {articles.length > 0 && !loading && !error && (
+        <LoadMoreBtn handleClick={handleClick} />
+      )}
       <ImageModal
-        isOpen={modalIsOpen}
-        isClose={modalIsClose}
-        image={targetImage}
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+        targetImage={targetImage}
       />
-      {loading && <Loader />}
-      {error && <ErrorMessage />}
     </section>
   );
 }
 
-export default App
+export default App;
