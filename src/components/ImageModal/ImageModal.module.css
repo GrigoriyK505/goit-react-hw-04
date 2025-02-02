@@ -1,24 +1,20 @@
 .Modal {
     position: absolute;
-        inset: 50% auto auto 50%;
-        border: none;
-        background-image: initial;
-        background-position: initial;
-        background-size: initial;
-        background-repeat: initial;
-        background-attachment: initial;
-        background-origin: initial;
-        background-clip: initial;
-        background-color: VAR(--color-green-300);
-        overflow: auto;
-        border-radius: 4px;
-        outline: none;
-        padding: 0px;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-green-300);
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    padding: 20px;
+    max-width: 80vw;
+    max-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Стиль для overlay, який затемнює фон */
 .Overlay {
     position: fixed;
     inset: 0;
@@ -26,39 +22,42 @@
     z-index: 1000;
 }
 
-/* Стиль для зображення всередині модального вікна */
-.modalImage {
+.modalContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     max-width: 100%;
     max-height: 100%;
+}
+
+.modalImage {
+    max-width: 100%;
+    max-height: 80vh;
     object-fit: contain;
 }
 
-/* Адаптивність для дуже маленьких екранів (мобільні телефони) */
-@media (max-width: 600px) {
+/* 🔹 Адаптивність для планшетів */
+@media (max-width: 768px) {
     .Modal {
-        max-width: 95%;
-        /* Збільшуємо ширину на малих екранах */
+        max-width: 90vw;
+        max-height: 70vh;
         padding: 15px;
-        /* Зменшуємо відступи для мобільних пристроїв */
+    }
+
+    .modalImage {
+        max-height: 70vh;
     }
 }
 
-/* Для середніх екранів (планшети в ландшафтному режимі) */
-@media (max-width: 900px) {
+/* 🔹 Адаптивність для мобільних телефонів */
+@media (max-width: 480px) {
     .Modal {
-        max-width: 85%;
-        /* Зменшуємо ширину для планшетів */
-        padding: 18px;
-        /* Невелике зменшення відступів */
+        max-width: 95vw;
+        max-height: 65vh;
+        padding: 10px;
     }
-}
 
-/* Для великих екранів (комп'ютери) */
-@media (min-width: 1200px) {
-    .Modal {
-        max-width: 70%;
-        /* Далі зменшуємо ширину для великих екранів */
-        padding: 20px;
-        /* Залишаємо стандартні відступи */
+    .modalImage {
+        max-height: 60vh;
     }
 }
